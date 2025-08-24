@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  jupyter_lab:
+    build: ./jupyter_lab
+    ports:
+      - "8888:8888"
+    volumes:
+      - model_storage:/app/models
+  fastapi_app:
+    build: ./fastapi_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - model_storage:/app/models
+volumes:
+  model_storage:
