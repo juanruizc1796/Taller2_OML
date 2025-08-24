@@ -1,15 +1,19 @@
-# Taller 2
+# Taller 2 - Operaciones Aprendizaje Máquina
+### Integrantes:
+- Yibby Gonzalez
+- Sebastian Ruiz
+- Adrian Tellez
 
 Este proyecto implementa un flujo de trabajo de MLOps para el entrenamiento y despliegue de modelos de Machine Learning. La arquitectura separa el entorno de experimentación del de inferencia, permitiendo que la API consuma nuevos modelos de forma dinámica, sin necesidad de reconstruir o reiniciar los servicios.
 
 ## Arquitectura del Proyecto
 
-Este proyecto utiliza una arquitectura de microservicios orquestada por Docker Compose, compuesta por tres elementos clave:
-- **Contenedro de Entranamiento:** Contiene las librerias necesarias para el entrenamiento de modelos, Donde se generaran los modelos.
+Este proyecto utiliza una arquitectura de microservicios orquestada por *Docker Compose*, compuesta por tres elementos clave:
+- **Contenedro de Entranamiento:** Contiene las librerias necesarias para el entrenamiento de modelos, Donde se generaron los modelos.
 
 - **Contenedor de Inferencia:** Contruido con FastAPI, con la finalidad de exponer endpoints para cargar modelos y suministrar predicciones.
 
-- **Volumen:** Funciona como un sistema de archivos compartidos que persiste los datos. Este se monta en ambos contenedores, con la finalidad que el contenedor de entranamiento guarde los modelos para que el 
+- **Volumen:** Funciona como un sistema de archivos compartidos que persiste los datos. Este se relaciona en ambos contenedores, con la finalidad que el contenedor de entrenamiento guarde los modelos para que el de inferencia pueda leerlos.
 
 ## Estructura de archivos
 
@@ -29,7 +33,7 @@ El proyecto está organizado de la siguiente manera:
 
 ## Descripción Detallada de Archivos
 
-**docker-compose.yml:** Define y orquesta los servicios que componen la aplicación, permitiéndoles comunicarse entre sí. Al ejecutar `docker-compose up`, este archivo le dice a Docker cómo construir cada imagen, qué puertos exponer y, crucialmente, cómo compartir datos entre los contenedores a través del volumen model_storage.
+**docker-compose.yml:** Define y orquesta los servicios que componen la aplicación, permitiéndoles comunicarse entre sí. Al ejecutar `docker-compose up`, este archivo le construye cada imagen, qué puertos exponer y, crucialmente, cómo compartir datos entre los contenedores a través del volumen *model_storage*.
 
 **Directorio `fastapi_app/`**: Este directorio contiene todo lo necesario para el servicio de inferencia, es decir, el servidor que se encarga de suministrar predicciones.
 
@@ -37,7 +41,7 @@ El proyecto está organizado de la siguiente manera:
 
 - **requirements.txt:** Lista las librerías de Python requeridas para el servidor, como fastapi, uvicorn y joblib, que se usan para cargar el modelo.
 
-- **main.py:** Contiene la lógica principal de la API con FastAPI. Sus endpoints (/models, models/{model_name}/activate, /predict) permiten listar, seleccionar y usar dinámicamente los modelos almacenados.
+- **main.py:** Contiene la lógica principal de la API con FastAPI. Sus endpoints (/models, models/{model_name}/activate, /predict) lo cuales permiten listar, seleccionar y usar dinámicamente los modelos almacenados.
 
 **Directorio `jupyter_lab/`**:
 
@@ -51,8 +55,8 @@ Este directorio se dedica al entorno de desarrollo y experimentación.
 
 En la terminal realizamos la creación de los archivos:
 ````bash
-mkdir taller_mlops_final
-cd taller_mlops_final
+mkdir taller_2_mlops
+cd taller_2_mlops
 
 mkdir jupyter_lab
 touch jupyter_lab/Dockerfile
@@ -70,7 +74,7 @@ touch docker-compose.yml
 
 ### 1. Preparación de los Contenedores
 
-**`jupyter_lab/requirements.txt`**: Dependencias necesarias para el análisis y entrenamiento de modelos:
+**`jupyter_lab/requirements.txt`**: Dependencias necesarias para el análisis y entrenamiento de modelos.
 
 ```text
 jupyterlab
@@ -168,7 +172,7 @@ volumes:
 
 ### 3. Lógica del Flujo de MLOps
 
-**`fastapi_app/main.py`**:Código de la API que carga modelos dinámicamente y realiza predicciones:
+**`fastapi_app/main.py`**: Código de la API que carga modelos dinámicamente y realiza predicciones:
 
 ```python
 from fastapi import FastAPI, HTTPException
@@ -246,7 +250,7 @@ docker-compose up --build
 
 ### 2. Entrenar Modelos
 - Accede a Jupyter en: [http://localhost:8888](http://localhost:8888)  
-- Abre el notebook `model.ipynb` y entrena un modelo.
+- Abre el notebook `model.ipynb` y entrena un modelo. Esto relacionara una cantidad $n$ de modelos que pueden ser  activados para su uso en el API de inferencia.
 **`model.ipynb`**:
 ````python
 import pandas as pd
@@ -336,15 +340,30 @@ results_df = pd.DataFrame(results)
 print(results_df.sort_values(by='accuracy', ascending=False).reset_index(drop=True))
 ````  
 
-### 3. Interactuar con la API 
+### 3. Interactuar con la API
+
+Para Consumir la API mediante llamdas HTTP desde la línea de comandos, realizamos los siguientes pasos:
+
 - **Listar modelos**: `GET /models` ejecutar en la terminal
 ````bash
 curl http://localhost:8000/models
 ````
-- **Activar modelo**: `POST /models/{model_name}/activate`  
+
+Output esperado:
+
+```bash
+{"active_model":"rf_n50_mdNone_msl4_acc0.97.joblib","available_models":["rf_n50_md10_msl4_acc0.97.joblib","rf_n75_md5_msl1_acc0.97.joblib","rf_n75_md5_msl2_acc0.97.joblib","rf_n50_md5_msl1_acc0.99.joblib","rf_n50_md10_msl1_acc1.00.joblib","rf_n75_md10_msl1_acc0.99.joblib","rf_n100_mdNone_msl2_acc0.97.joblib","rf_n50_md5_msl2_acc0.97.joblib","rf_n50_mdNone_msl4_acc0.97.joblib","rf_n100_mdNone_msl4_acc0.97.joblib","rf_n100_md10_msl1_acc0.97.joblib","rf_n50_md10_msl2_acc0.97.joblib","rf_n100_mdNone_msl1_acc0.97.joblib","rf_n50_md5_msl4_acc0.97.joblib","rf_n100_md5_msl4_acc0.97.joblib","rf_n75_mdNone_msl2_acc0.97.joblib","rf_n75_mdNone_msl4_acc0.97.joblib","rf_n100_md5_msl2_acc0.97.joblib","rf_n75_mdNone_msl1_acc0.99.joblib","rf_n75_md5_msl4_acc0.97.joblib","rf_n100_md10_msl2_acc0.97.joblib","rf_n75_md10_msl4_acc0.97.joblib","rf_n50_mdNone_msl1_acc1.00.joblib","rf_n100_md10_msl4_acc0.97.joblib","rf_n75_md10_msl2_acc0.97.joblib","rf_n100_md5_msl1_acc0.97.joblib","rf_n50_mdNone_msl2_acc0.97.joblib"]}
+```
+
+- **Activar modelo**: `POST /models/{model_name}/activate`, relacionando el .joblib del modelo seleccionado, para terminos practicos sera el primero en la lista  
 ````bash
-curl -X POST http://localhost:8000/models/penguins_rf_model_20250824_123000.joblib/activate
+curl -X POST http://localhost:8000/models/rf_n50_mdNone_msl4_acc0.97.joblib/activate
 ````
+Output esperado:
+```bash
+{"message":"Modelo 'rf_n50_mdNone_msl4_acc0.97.joblib' activado exitosamente."}
+```
+
 - **Predecir**: `POST /predict`
 ```bash
 curl -X POST \
@@ -354,5 +373,13 @@ curl -X POST \
   }' \
   http://localhost:8000/predict
 ```
+Output esperado:
 
----
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "features": [40.0, 18.0, 190.0, 3800.0]
+  }' \
+  http://localhost:8000/predict
+```
