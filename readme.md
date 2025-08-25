@@ -1,5 +1,5 @@
 # Taller 2 - Operaciones Aprendizaje Máquina
-### Integrantes:
+### Integrantes - Grupo 1:
 - Yibby Gonzalez
 - Sebastian Ruiz
 - Adrian Tellez
