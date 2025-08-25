@@ -342,7 +342,7 @@ print(results_df.sort_values(by='accuracy', ascending=False).reset_index(drop=Tr
 
 ### 3. Interactuar con la API
 
-Para Consumir la API mediante llamdas HTTP desde la línea de comandos, realizamos los siguientes pasos:
+Para Consumir la API mediante llamada HTTP desde la línea de comandos, realizamos los siguientes pasos:
 
 - **Listar modelos**: `GET /models` ejecutar en la terminal
 ````bash
@@ -376,10 +376,5 @@ curl -X POST \
 Output esperado:
 
 ```bash
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{
-    "features": [40.0, 18.0, 190.0, 3800.0]
-  }' \
-  http://localhost:8000/predict
+{"prediction":[0],"model_used":"rf_n50_mdNone_msl4_acc0.97.joblib"}
 ```
