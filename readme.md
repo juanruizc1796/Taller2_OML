@@ -264,9 +264,9 @@ import os
 import glob
 import itertools
 
-#########################################
-# 1. PREPARACIÓN DE DATOS (Sin cambios) #
-#########################################
+############################
+# 1. PREPARACIÓN DE DATOS  #
+############################
 
 df = load_penguins()
 df.dropna(inplace=True)
@@ -274,9 +274,9 @@ X = df[["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"]]
 y = LabelEncoder().fit_transform(df["species"])
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-#########################################
-# 2. LIMPIAR MODELOS ANTERIORES (Nuevo) #
-#########################################
+#################################
+# 2. LIMPIAR MODELOS ANTERIORES #
+#################################
 
 model_dir = '/app/models'
 os.makedirs(model_dir, exist_ok=True) 
